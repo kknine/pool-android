@@ -4,11 +4,13 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class User {
 
+    private final int id;
     private final String name;
     private final String email;
     private final LatLng location;
 
-    public User(String name, String email, LatLng location) {
+    public User(int id, String name, String email, LatLng location) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.location = location;
@@ -24,5 +26,9 @@ public class User {
 
     public LatLng getLocation() {
         return location;
+    }
+
+    public int getId() {
+        return id;
     }
 }
