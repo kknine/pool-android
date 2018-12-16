@@ -38,6 +38,10 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
         return mFriendList.size();
     }
 
+    public void swap(ArrayList<User> list) {
+        mFriendList = list;
+    }
+
     class FriendViewHolder extends RecyclerView.ViewHolder {
         View itemView;
 

@@ -100,32 +100,40 @@ public class RegisterActivity extends AppCompatActivity implements
 
 
     @Override
-    public void carSaved(String value) {
-        car = new Car(value);
+    public void carSaved(String value, int num) {
+        car = new Car(value, num);
         RegisterForm = findViewById(R.id.reg_form);
         RegisterProgress = findViewById(R.id.reg_progress);
         showProgress(true);
         View v = findViewById(R.id.rca_car);
         hideKeyboardFrom(getApplicationContext(),v);
         showProgress(true);
-        mServer.registerNewUser(email, name, pass, location, car, new Utils.Callback<Boolean, String>() {
+        mServer.registerNewUser(email, name, pass, location, new Utils.Callback<Integer, String>() {
             @Override
-            public void onSuccess(Boolean obj) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("You are signed up!");
-                builder.setMessage("Your account was created, you can log in now");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onSuccess(Integer id) {
+                mServer.addCar(id, car, new Utils.Callback<Boolean, String>() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(0, 0);
+                    public void onSuccess(Boolean obj) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                        builder.setTitle("You are signed up!");
+                        builder.setMessage("Your account was created, you can log in now");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                                overridePendingTransition(0, 0);
+                            }
+                        });
+                        builder.show();
+                    }
+                    @Override
+                    public void onFail(String obj) {
+                        Toast.makeText(RegisterActivity.this,"Could not register new user",Toast.LENGTH_SHORT).show();
                     }
                 });
-                builder.show();
             }
-
             @Override
             public void onFail(String obj) {
                 Toast.makeText(RegisterActivity.this,"Could not register new user",Toast.LENGTH_SHORT).show();

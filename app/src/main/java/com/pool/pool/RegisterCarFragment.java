@@ -71,19 +71,14 @@ public class RegisterCarFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         EditText car_e = (EditText) cont.findViewById(R.id.rca_car);
         String car_s = car_e.getText().toString();
-        if(validateCar(car_s)) {
-            mListener.carSaved(car_s);
-        }
+        EditText seats_e = (EditText) cont.findViewById(R.id.rca_seats);
+        int seats = Integer.parseInt(seats_e.getText().toString());
+        mListener.carSaved(car_s, seats);
     }
 
-    private boolean validateCar(String email) {
-        //TODO: do validation
-//        return ((email.contains("@"))&&(email.contains(".")));
-        return true;
-    }
 
 
     public interface OnFragmentInteractionListener {
-        void carSaved(String car_S);
+        void carSaved(String car_S, int seats);
     }
 }

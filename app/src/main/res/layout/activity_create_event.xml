@@ -47,6 +47,25 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
+        android:id="@+id/cev_text_input_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cev_text_input_1">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/cev_datetime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date of the event"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -55,7 +74,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toStartOf="@+id/cev_find"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cev_text_input_1">
+        app:layout_constraintTop_toBottomOf="@+id/cev_text_input_3">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/cev_location"
@@ -99,6 +118,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:onClick="createEvent"
         android:text="Create"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

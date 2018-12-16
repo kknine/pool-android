@@ -5,4 +5,5 @@ public class Constants {
     public static final String WRONG_CREDENTIALS_ERROR = "Wrong credentials";
     public static final String CONNECTION_ERROR = "Connection error";
     public static final String UNKNOWN_ERROR = "Unknown error";
+    public static final String API_URL = "http://10.0.2.2:8080";
 }

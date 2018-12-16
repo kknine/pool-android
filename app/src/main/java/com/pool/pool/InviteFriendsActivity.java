@@ -15,6 +15,7 @@ import com.pool.pool.server.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class InviteFriendsActivity extends AppCompatActivity {
 
@@ -22,13 +23,14 @@ public class InviteFriendsActivity extends AppCompatActivity {
     FriendInviteAdapter mAdapter;
     Server mServer;
     HashMap<Integer,Boolean> map;
+    int eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite_friends);
         map = new HashMap<>();
-        int eventId = getIntent().getIntExtra(Constants.EXTRA_EVENT_ID,1);
+        eventId = getIntent().getIntExtra(Constants.EXTRA_EVENT_ID,1);
         mServer = new Server(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.ifr_recycler);
         mServer.getUninvitedFriends(eventId, new Utils.Callback<ArrayList<User>, String>() {
@@ -55,7 +57,23 @@ public class InviteFriendsActivity extends AppCompatActivity {
     }
 
     public void accept(View v) {
+        Set<Integer> set = map.keySet();
+        for(int i : set) {
+            if(map.get(i).booleanValue()) {
+                mServer.inviteFriend(eventId, i, new Utils.Callback<String, String>() {
+                    @Override
+                    public void onSuccess(String obj) {
 
+                    }
+
+                    @Override
+                    public void onFail(String obj) {
+
+                    }
+                });
+            }
+        }
+        finish();
     }
 
     public interface OnItemClickListener {

@@ -13,11 +13,24 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class RegisterLocationFragment extends Fragment implements View.OnClickListener {
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.pool.pool.server.Server;
+import com.pool.pool.server.Utils;
+
+public class RegisterLocationFragment extends Fragment implements View.OnClickListener, OnMapReadyCallback {
 
     private OnFragmentInteractionListener mListener;
     View cont;
+    GoogleMap mMap;
+    Server mServer;
+    LatLng mLocation;
     public RegisterLocationFragment() {
 
     }
@@ -30,6 +43,8 @@ public class RegisterLocationFragment extends Fragment implements View.OnClickLi
         cont = inflater.inflate(R.layout.fragment_register_location, container, false);
         Button b = (Button) cont.findViewById(R.id.rlo_save);
         b.setOnClickListener(this);
+        Button find = (Button) cont.findViewById(R.id.rlo_find);
+        find.setOnClickListener(this);
         final EditText email_e = (EditText) cont.findViewById(R.id.rlo_location);
         email_e.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -42,6 +57,10 @@ public class RegisterLocationFragment extends Fragment implements View.OnClickLi
                 return handled;
             }
         });
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.rlo_map);
+        mapFragment.getMapAsync(this);
+        mServer = new Server(getActivity());
         return cont;
     }
 
@@ -67,15 +86,38 @@ public class RegisterLocationFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        EditText location_e = (EditText) cont.findViewById(R.id.rlo_location);
-        String email = location_e.getText().toString();
-        if(validateAddress(email)) {
+        if(v.getId()==R.id.rlo_save) {
+            EditText location_e = (EditText) cont.findViewById(R.id.rlo_location);
+            String email = location_e.getText().toString();
             mListener.locationSaved(email);
+        } else if(v.getId()==R.id.rlo_find) {
+            EditText location_e = (EditText) cont.findViewById(R.id.rlo_location);
+            String location = location_e.getText().toString();
+            mServer.getLatLngForLocation(location, new Utils.Callback<LatLng, String>() {
+                @Override
+                public void onSuccess(LatLng position) {
+                    mMap.clear();
+                    MarkerOptions marker = new MarkerOptions().position(position);
+                    mMap.addMarker(marker);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,10f));
+                    Button continue_b = cont.findViewById(R.id.rlo_save);
+                    continue_b.setEnabled(true);
+                    mLocation = position;
+                }
+
+                @Override
+                public void onFail(String obj) {
+                    Toast.makeText(getContext(),"Can't get the location",Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
-    private boolean validateAddress(String email) {
-        return ((email.contains("@"))&&(email.contains(".")));
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
 
     }
 

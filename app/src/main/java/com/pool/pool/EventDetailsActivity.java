@@ -1,6 +1,7 @@
 package com.pool.pool;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +43,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         TextView eventName_tv = (TextView) findViewById(R.id.ede_name);
         eventName_tv.setText(eventName);
         int eventOwner = getIntent().getIntExtra(Constants.EXTRA_EVENT_OWNER,0);
-        if(eventOwner == getUserId()) {
+        if(eventOwner == Auth.getUser(this).getId()) {
             Button inviteFriends_b = (Button) findViewById(R.id.ede_invite);
             inviteFriends_b.setEnabled(true);
             inviteFriends_b.setVisibility(View.VISIBLE);
@@ -53,18 +54,27 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
         mRecyclerView = (RecyclerView) findViewById(R.id.ede_recycler);
         mServer = new Server(this);
+
+    }
+
+    protected void onResume() {
+        super.onResume();
         mServer.getInvitedGuests(eventId, new Utils.Callback<ArrayList<User>, String>() {
             @Override
             public void onSuccess(ArrayList<User> guests) {
-                mAdapter = new FriendAdapter(guests);
-                mRecyclerView.setLayoutManager(new LinearLayoutManager((EventDetailsActivity.this)));
-                mRecyclerView.setHasFixedSize(true);
-                mRecyclerView.addItemDecoration(new DividerItemDecoration(EventDetailsActivity.this, DividerItemDecoration.VERTICAL));
-                mRecyclerView.setAdapter(mAdapter);
-                TextView guestsNumber_tv = (TextView) findViewById(R.id.ede_guests_nuber);
-                guestsNumber_tv.setText(Integer.toString(guests.size()));
+                if(mAdapter==null) {
+                    mAdapter = new FriendAdapter(guests);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager((EventDetailsActivity.this)));
+                    mRecyclerView.setHasFixedSize(true);
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(EventDetailsActivity.this, DividerItemDecoration.VERTICAL));
+                    mRecyclerView.setAdapter(mAdapter);
+                    TextView guestsNumber_tv = (TextView) findViewById(R.id.ede_guests_nuber);
+                    guestsNumber_tv.setText(Integer.toString(guests.size()));
+                } else {
+                    mAdapter.swap(guests);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
-
             @Override
             public void onFail(String obj) {
 
@@ -79,10 +89,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private int getUserId() {
-        //TODO: define actual fetching of id
-        return 1;
+    public void showDirections(View v) {
+        Intent i = new Intent(this,MapsActivity.class);
+        i.putExtra(Constants.EXTRA_EVENT_ID,eventId);
+        startActivity(i);
     }
+
 
 
 }

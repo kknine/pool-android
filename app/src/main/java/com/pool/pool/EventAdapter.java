@@ -41,6 +41,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return mEventList.size();
     }
 
+    public void swap(ArrayList<Event> list) {
+        mEventList = list;
+    }
+
     class EventViewHolder extends RecyclerView.ViewHolder {
 
         View itemView;

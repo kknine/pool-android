@@ -38,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 case R.id.navigation_profile:
+                    if(state!=2) {
+                        ProfileFragment newFragment = new ProfileFragment();
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.main_fragment, newFragment);
+                        transaction.commit();
+                        state = 2;
+                    }
                     return true;
             }
             return false;

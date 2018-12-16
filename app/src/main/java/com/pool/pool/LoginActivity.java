@@ -141,7 +141,8 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(true);
             server.singIn(email, password, new Utils.Callback<User, String>() {
                 @Override
-                public void onSuccess(User obj) {
+                public void onSuccess(User user) {
+                    Auth.saveUser(LoginActivity.this,user);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
